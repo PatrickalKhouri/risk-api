@@ -1,9 +1,9 @@
 class PersonsController < ApplicationController
 
-  def test
+  def risk_calculation
 
-    testing = {key: 'value' }
-
-    render json: testing
+    result = Person.first
+    
+    render json: result
   end
 end
