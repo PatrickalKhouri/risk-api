@@ -8,11 +8,11 @@ class PersonsController < ApplicationController
     base_risk = base_risk_calculation(person)
     auto_points = auto(base_risk, person)
 
-    
+    result = { base_point: base_risk, auto: auto_points}    
     render json: result
   end
 
-  private
+  private 
 
   def base_risk_calculation(person)
     question_1 = person.risk_question_1 ? 1 : 0
@@ -38,8 +38,8 @@ class PersonsController < ApplicationController
   def auto(base_risk, person)
     return "ineligible" if !person.vehicle
 
-    current_year = Date.now.year
-    year_points = person.vehicle + 5 > current_year ? 1 : 0
+    # current_year = Date.now.year
+    year_points = person.year + 5 > 2020 ? 1 : 0
     points = base_risk + year_points
     auto_points = outcome(points)
     auto_points
@@ -58,14 +58,15 @@ class PersonsController < ApplicationController
   def life(base_risk)
   end
 
-  def outcome(points)
-    case points
-    when >= 3 
-      "responsible"
-    when >= 1 && < 3
-      "regular"
-    when <= 0
-      "economic"
+ def outcome(points)
+  case 
+  when points >= 3 
+    "responsible"
+  when points >= 1 &&  points < 3
+    "regular"
+  when points <= 0
+    "economic"
     end
   end
+
 end
