@@ -6,10 +6,13 @@ class PersonsController < ApplicationController
 
     person = Person.first
     base_risk = base_risk_calculation(person)
+    auto_points = auto(base_risk, person)
 
     
     render json: result
   end
+
+  private
 
   def base_risk_calculation(person)
     question_1 = person.risk_question_1 ? 1 : 0
