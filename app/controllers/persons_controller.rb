@@ -8,8 +8,10 @@ class PersonsController < ApplicationController
     base_risk = base_risk_calculation(person)
     auto_points = auto(base_risk, person)
     disability_points = disability(base_risk, person)
+    home_points = home(base_risk, person)
+    life_points = life(base_risk, person)
 
-    result = { base_point: base_risk, auto: auto_points, disability: disability_points }    
+    result = { auto: auto_points, disability: disability_points, home: home_points, life: life_points }    
     render json: result
   end
 
@@ -52,24 +54,38 @@ class PersonsController < ApplicationController
     morgage_points = person.ownership_status == "mortgaged" ? 1 : 0
     dependent_points = person.dependents >= 1 ? 1 : 0
     marital_points = person.marital_status == "married" ? 1 : 0
-    disability_points = base_risk + morgage_points + dependent_points - marital_points
+    points = base_risk + morgage_points + dependent_points - marital_points
+    disability_points = outcome(points)
     disability_points
   end
   
-  def home(base_risk)
+  def home(base_risk, person)
+    return "ineligible" if !person.house
+
+    morgage_points = person.ownership_status == "mortgaged" ? 1 : 0
+    points = base_risk + morgage_points
+    home_points = outcome(points)
+    home_points
   end
 
-  def life(base_risk)
+  def life(base_risk, person)
+    return "ineligible" if person.age > 60
+
+    dependent_points = person.dependents >= 1 ? 1 : 0
+    marital_points = person.marital_status == "married" ? 1 : 0
+    points = base_risk + dependent_points + marital_points
+    life_points = outcome(points)
+    life_points
   end
 
  def outcome(points)
   case 
   when points >= 3 
-    points
+    "responsible"
   when points >= 1 &&  points < 3
-    points
+    "regular"
   when points <= 0
-    points
+    "economic"
     end
   end
 
