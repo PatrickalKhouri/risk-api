@@ -38,8 +38,8 @@ class PersonsController < ApplicationController
   def auto(base_risk, person)
     return "ineligible" if !person.vehicle
 
-    # current_year = Date.now.year
-    year_points = person.year + 5 > 2020 ? 1 : 0
+    current_year = DateTime.now.year
+    year_points = person.vehicle_year + 5 > current_year ? 1 : 0
     points = base_risk + year_points
     auto_points = outcome(points)
     auto_points
