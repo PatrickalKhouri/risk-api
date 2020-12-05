@@ -11,7 +11,6 @@ Person.destroy_all
 
 puts 'Creating Person...'
 
-test = Person.create!(age: 25, dependents: 0, house: false, ownership_status: 'owned', income: 20000, marital_status: 'single', 
-risk_question_1: false, risk_question_2: true, risk_question_3: false,  vehicle: true, year: 2019) 
-
+test = Person.create!(age: 50, dependents: 1, house: true, ownership_status: 'mortgaged', income: 300000, marital_status: 'married', 
+risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2019) 
 puts 'Person created!!'

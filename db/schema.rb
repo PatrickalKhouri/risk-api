@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_05_164124) do
+ActiveRecord::Schema.define(version: 2020_12_05_202316) do
 
   create_table "people", force: :cascade do |t|
     t.integer "age"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 2020_12_05_164124) do
     t.boolean "risk_question_2"
     t.boolean "risk_question_3"
     t.boolean "vehicle"
-    t.integer "year"
+    t.integer "vehicle_year"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
