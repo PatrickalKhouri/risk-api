@@ -91,7 +91,29 @@ RSpec.describe Person, type: :model do
       risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2019).save
       expect(person).to eq(true)
     end
-
   end
-  
 end
+
+
+RSpec.describe Person, type: :controller do
+  context "controller tests" do
+    context 'base points' do
+    #  it 'question points should add when answer is true' do
+    #    person = Person.new(age: 50, dependents: 1, house: true, ownership_status: 'mortgaged', income: 300000, marital_status: 'married', 
+    #    risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2019).save
+
+    #    puts person
+    #    puts person.class
+
+    #    question_1 = person.risk_question_1 ? 1 : 0
+    #    question_2 = person.risk_question_2 ? 1 : 0
+    #    question_3 = person.risk_question_3 ? 1 : 0
+
+    #    questions_points = question_1 + question_2 + question_3
+
+    #    expect(questions_points).to eq(1)
+    #  end
+    end
+  end
+end
+  
