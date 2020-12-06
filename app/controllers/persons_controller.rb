@@ -4,7 +4,7 @@ class PersonsController < ApplicationController
 
   def risk_calculation
 
-    person = Person.first
+    person = Person.last
     base_risk = base_risk_calculation(person)
     auto_points = auto(base_risk, person)
     disability_points = disability(base_risk, person)
