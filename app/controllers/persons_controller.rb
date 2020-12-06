@@ -2,6 +2,14 @@ require 'date'
 
 class PersonsController < ApplicationController
 
+  def create
+    person = Person.new(person_params)
+    if person.valid?
+      render json: person
+    else
+      #error
+    end
+
   def risk_calculation
 
     person = Person.last
@@ -17,7 +25,12 @@ class PersonsController < ApplicationController
 
   private 
 
-  def base_risk_calculation(person)
+  def person_params
+    params.require(:person).permit(:age, :dependents, :house { :ownership_status }, :income, :marital_status,
+    :risk_question_1, :risk_question_2, :risk_question_3, :vehicle { :vehicle_year } )
+  end
+
+  def base_risk_calculation(person) 
     question_1 = person.risk_question_1 ? 1 : 0
     question_2 = person.risk_question_2 ? 1 : 0
     question_3 = person.risk_question_3 ? 1 : 0
