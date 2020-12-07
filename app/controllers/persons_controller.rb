@@ -4,7 +4,6 @@ class PersonsController < ApplicationController
 
   def create
     person = Person.new(person_params)
-    person.risk_questions = params[:risk_questions]
     person.ownership_status = params[:house][:ownership_status]
     person.vehicle_year = params[:vehicle][:year]
     if person.valid?
