@@ -12,7 +12,7 @@ class PersonsController < ApplicationController
       result_json = risk_calculation(person)
       render json: result_json
     else
-      error_json = { error: "Status 400" }
+      error_json = { error: "Invalid inputs" }
       render json: error_json, status: 400
     end
   end
@@ -36,7 +36,7 @@ class PersonsController < ApplicationController
 
   def base_risk_calculation(person)
     questions_points = 0
-    questions_points = person.risk_questions[0] + person.risk_questions[1] + person.risk_questions[2]
+    person.risk_questions.each { |question| questions_points += question}
 
     if person.age < 30
       age_points = 2
