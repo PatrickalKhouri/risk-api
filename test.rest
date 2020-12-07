@@ -2,7 +2,7 @@ POST http://localhost:3000/risk-evaluation
 Content-Type: application/json
 
 {
-  "age": 35,
+  "age": 30,
   "dependents": 2,
   "house": {"ownership_status": "owned"},
   "income": 0,
