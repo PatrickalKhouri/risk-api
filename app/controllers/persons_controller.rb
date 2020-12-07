@@ -5,14 +5,19 @@ class PersonsController < ApplicationController
   def create
     person = Person.new(person_params)
     if person.valid?
-      render json: person
+      person.save
+      risk_calculation(person)
     else
-      #error
+      # mandar erro em json
     end
 
-  def risk_calculation
+  end
 
-    person = Person.last
+  private
+
+  def risk_calculation(person)
+
+    
     base_risk = base_risk_calculation(person)
     auto_points = auto(base_risk, person)
     disability_points = disability(base_risk, person)
@@ -23,12 +28,10 @@ class PersonsController < ApplicationController
     render json: result
   end
 
-  private 
-
   def person_params
-    params.require(:person).permit(:age, :dependents, :house { :ownership_status }, :income, :marital_status,
-    :risk_question_1, :risk_question_2, :risk_question_3, :vehicle { :vehicle_year } )
-  end
+    params.require(:person).permit(:age, :dependents, :house [ :ownership_status ], :income, :marital_status,
+   :risk_questions, :vehicle [ :vehicle_year ] )
+   end
 
   def base_risk_calculation(person) 
     question_1 = person.risk_question_1 ? 1 : 0
