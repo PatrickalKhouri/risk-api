@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_07_185018) do
+ActiveRecord::Schema.define(version: 2020_12_05_202316) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "people", force: :cascade do |t|
     t.integer "age"
@@ -19,7 +22,7 @@ ActiveRecord::Schema.define(version: 2020_12_07_185018) do
     t.string "ownership_status"
     t.integer "income"
     t.string "marital_status"
-    t.integer "risk_questions"
+    t.integer "risk_questions", default: [], array: true
     t.boolean "vehicle"
     t.integer "vehicle_year"
     t.datetime "created_at", precision: 6, null: false
