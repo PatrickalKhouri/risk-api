@@ -5,7 +5,6 @@ class PersonsController < ApplicationController
   def create
     person = Person.new(person_params)
     person.risk_questions = params[:risk_questions]
-    binding.pry
     person.ownership_status = params[:house][:ownership_status]
     person.vehicle_year = params[:vehicle][:year]
     if person.valid?
@@ -15,7 +14,6 @@ class PersonsController < ApplicationController
     else
       # mandar erro em json
     end
-
   end
 
   private
@@ -37,10 +35,8 @@ class PersonsController < ApplicationController
 
   def base_risk_calculation(person)
     questions_points = 0
-    questions_points = person.risk_questions.each do |question|
-        questions_points += question
-    end
-    
+    questions_points = person.risk_questions[0] + person.risk_questions[1] + person.risk_questions[2]
+        
     if person.age < 30
       age_points = 2
     elsif person.age <= 40

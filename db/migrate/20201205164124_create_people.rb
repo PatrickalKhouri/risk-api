@@ -7,12 +7,9 @@ class CreatePeople < ActiveRecord::Migration[6.0]
       t.string :ownership_status
       t.integer :income
       t.string :marital_status
-      t.boolean :risk_question_1
-      t.boolean :risk_question_2
-      t.boolean :risk_question_3
+      t.integer :risk_questions, array: true, default: []
       t.boolean :vehicle
       t.integer :year
-
       t.timestamps
     end
   end
