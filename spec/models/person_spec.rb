@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'date'
 
 RSpec.describe Person, type: :model do
   context "validation tests" do
@@ -92,27 +93,165 @@ RSpec.describe Person, type: :model do
       expect(person).to eq(true)
     end
   end
-end
 
-
-RSpec.describe Person, type: :controller do
   context "controller tests" do
     context 'base points' do
-    #  it 'question points should add when answer is true' do
-    #    person = Person.new(age: 50, dependents: 1, house: true, ownership_status: 'mortgaged', income: 300000, marital_status: 'married', 
-    #    risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2019).save
+      it 'question points should add when answer is true' do
+        person = Person.create(age: 50, dependents: 1, house: true, ownership_status: 'mortgaged', income: 300000, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2019)
+        question_1 = person.risk_question_1 ? 1 : 0
+        question_2 = person.risk_question_2 ? 1 : 0
+        question_3 = person.risk_question_3 ? 1 : 0  
+        questions_points = question_1 + question_2 + question_3
+        expect(questions_points).to eq(2)
+      end
 
-    #    puts person
-    #    puts person.class
+      it 'the age of the person should deduct points off the base risk points' do
+        person = Person.create(age: 29, dependents: 1, house: true, ownership_status: 'mortgaged', income: 300000, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2019)
+        age_points = 2 if person.age < 30     
+        expect(age_points).to eq(2)
+      end
 
-    #    question_1 = person.risk_question_1 ? 1 : 0
-    #    question_2 = person.risk_question_2 ? 1 : 0
-    #    question_3 = person.risk_question_3 ? 1 : 0
+      it 'high income should deduct points off the base risk points' do
+        person = Person.create(age: 29, dependents: 1, house: true, ownership_status: 'mortgaged', income: 200001, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2019)
+        income_points = person.income > 200000 ? 1 : 0    
+        expect(income_points).to eq(1)
+      end
+    end
 
-    #    questions_points = question_1 + question_2 + question_3
+    context 'auto points' do
+      it 'ineligible if person doesnt have a car' do
+        person = Person.create(age: 29, dependents: 1, house: false, ownership_status: 'mortgaged', income: 200001, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        result = "ineligible" if !person.vehicle
+        expect(result).to eq("ineligible")
+      end
 
-    #    expect(questions_points).to eq(1)
-    #  end
+      it 'older cars should add points of the auto points' do
+        person = Person.create(age: 29, dependents: 1, house: true, ownership_status: 'mortgaged', income: 200001, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: true, vehicle_year: 2015)
+        current_year = DateTime.now.year
+        year_points = person.vehicle_year + 5 >= current_year ? 1 : 0
+        expect(year_points).to eq(1)
+      end
+    end
+
+    context 'disability points' do
+      it 'ineligible if person doesnt have income' do 
+        person = Person.create(age: 29, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        result = "ineligible" if person.income == 0
+        expect(result).to eq("ineligible")
+      end
+
+      it 'ineligible if person is older than 60' do 
+        person = Person.create(age: 61, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        result = "ineligible" if person.age > 0
+        expect(result).to eq("ineligible")
+      end
+
+      it 'If house is mortgaged then add one point to the disability points' do 
+        person = Person.create(age: 61, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        morgage_points = person.ownership_status == "mortgaged" ? 1 : 0
+        expect(morgage_points).to eq(1)
+      end
+
+      it 'If person has dependents then add one point to the disability points' do 
+        person = Person.create(age: 61, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        dependent_points = person.dependents >= 1 ? 1 : 0
+        expect(dependent_points).to eq(1)
+      end
+
+      it 'If person is married then deduct one point to the disability points' do 
+        person = Person.create(age: 61, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        marital_points = person.marital_status == "married" ? 1 : 0
+        expect(marital_points).to eq(1)
+      end
+    end
+
+    context 'house points' do
+      it 'ineligible if person doesnt have a house' do
+        person = Person.create(age: 29, dependents: 1, house: false, ownership_status: 'mortgaged', income: 200001, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        result = "ineligible" if !person.house
+        expect(result).to eq("ineligible")
+      end
+
+      it 'If house is mortgaged then add one point to the house points' do
+        person = Person.create(age: 61, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        morgage_points = person.ownership_status == "mortgaged" ? 1 : 0
+        expect(morgage_points).to eq(1)
+      end
+    end
+
+    context 'life points' do
+      it 'If person is married then  one point to the life points' do 
+        person = Person.create(age: 61, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        marital_points = person.marital_status == "married" ? 1 : 0
+        expect(marital_points).to eq(1)
+      end
+
+      it 'If person has dependents then add one point to the disability points' do 
+        person = Person.create(age: 61, dependents: 1, house: false, ownership_status: 'mortgaged', income: 0, marital_status: 'married', 
+        risk_question_1: false, risk_question_2: true, risk_question_3: true,  vehicle: false, vehicle_year: 2019)
+        dependent_points = person.dependents >= 1 ? 1 : 0
+        expect(dependent_points).to eq(1)
+      end
+    end
+
+    context  'output' do
+      it 'returns economic if points are 0 or less' do
+        points = 0
+        case 
+        when points >= 3 
+          result ="responsible"
+        when points >= 1 &&  points < 3
+          result = "regular"
+        when points <= 0
+         result = "economic"
+        end
+
+        expect(result).to eq("economic")
+
+      end
+
+      it 'returns regular if points are 1 or 2' do
+        points = 2
+        case 
+        when points >= 3 
+          result ="responsible"
+        when points >= 1 &&  points < 3
+          result = "regular"
+        when points <= 0
+         result = "economic"
+        end
+
+        expect(result).to eq("regular")
+      end
+
+      it 'returns responsible if points are 3 or above' do
+        points = 4
+        case 
+        when points >= 3 
+          result ="responsible"
+        when points >= 1 &&  points < 3
+          result = "regular"
+        when points <= 0
+         result = "economic"
+        end
+
+        expect(result).to eq("responsible")
+      end
+
+
     end
   end
 end

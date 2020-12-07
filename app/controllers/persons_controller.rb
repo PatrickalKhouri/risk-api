@@ -55,7 +55,7 @@ class PersonsController < ApplicationController
     return "ineligible" if !person.vehicle
 
     current_year = DateTime.now.year
-    year_points = person.vehicle_year + 5 > current_year ? 1 : 0
+    year_points = person.vehicle_year + 5 >= current_year ? 1 : 0
     points = base_risk + year_points
     auto_points = outcome(points)
     auto_points
