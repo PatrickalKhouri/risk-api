@@ -1,5 +1,5 @@
 class Person < ApplicationRecord
-  validates :age, :dependents, :marital_status, :income,  presence: true
+  validates :age, :dependents, :marital_status, :income, :risk_questions,  presence: true
   validates :house, :vehicle, inclusion: { in: [true, false]}
   validates :marital_status, inclusion: { in: ['single', 'married'] }
   validates :ownership_status, inclusion: { in: ['owned', 'mortgaged']}
