@@ -4,9 +4,14 @@ class PersonsController < ApplicationController
 
   def create
     person = Person.new(person_params)
+    person.risk_questions = params[:risk_questions]
+    binding.pry
+    person.ownership_status = params[:house][:ownership_status]
+    person.vehicle_year = params[:vehicle][:year]
     if person.valid?
       person.save
-      risk_calculation(person)
+      result_json = risk_calculation(person)
+      render json: result_json
     else
       # mandar erro em json
     end
@@ -16,29 +21,25 @@ class PersonsController < ApplicationController
   private
 
   def risk_calculation(person)
-
-    
     base_risk = base_risk_calculation(person)
     auto_points = auto(base_risk, person)
     disability_points = disability(base_risk, person)
     home_points = home(base_risk, person)
     life_points = life(base_risk, person)
-
     result = { auto: auto_points, disability: disability_points, home: home_points, life: life_points }    
-    render json: result
+    result
   end
 
   def person_params
-    params.require(:person).permit(:age, :dependents, :house [ :ownership_status ], :income, :marital_status,
-   :risk_questions, :vehicle [ :vehicle_year ] )
+    params.require(:person).permit(:age, :dependents, :income, :marital_status,
+   risk_questions:[], vehicle: [ :year ], house: [ :ownership_status] )
    end
 
-  def base_risk_calculation(person) 
-    question_1 = person.risk_question_1 ? 1 : 0
-    question_2 = person.risk_question_2 ? 1 : 0
-    question_3 = person.risk_question_3 ? 1 : 0
-
-    questions_points = question_1 + question_2 + question_3
+  def base_risk_calculation(person)
+    questions_points = 0
+    questions_points = person.risk_questions.each do |question|
+        questions_points += question
+    end
     
     if person.age < 30
       age_points = 2
