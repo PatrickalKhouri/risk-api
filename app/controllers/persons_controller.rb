@@ -30,7 +30,7 @@ class PersonsController < ApplicationController
 
   def person_params
     params.require(:person).permit(:age, :dependents, :income, :marital_status,
-   risk_questions:[], vehicle: [ :year ], house: [ :ownership_status] )
+    risk_questions:[], vehicle: [ :year ], house: [ :ownership_status] )
    end
 
   def base_risk_calculation(person)
@@ -44,9 +44,8 @@ class PersonsController < ApplicationController
     else
       age_points = 0
     end
-
+    
     income_points = person.income > 200000 ? 1 : 0
-
     base_risk = questions_points - age_points - income_points
     base_risk
   end

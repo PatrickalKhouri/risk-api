@@ -48,13 +48,10 @@ I did the project in Rails since its the framework that I am the most comfortabl
 
 When doing the algorithm i decided to split the code in bit by line of insurance, this breaks the code in smaller bits, makes it easier to debug and if any alteration is made to the business rules, they become easy to find where to alter the code.
 
-Then I did the automated test, and I know that ideally a TDD would be the ideal, and on a next project i would have a TDD approach.
+Then I tackeld the automated tests.  I know that ideally I would create the tests before creating the model, validations and algorithm, and on a next project i would have a TDD approach. Since I haven't worked with automated tests I did it after I did the algorithm.
 
-And lastly I did the route and json payload, another first for me. Using postgres sql allowed me to have an array for the risk questions, while sqlite doesn't allow it.
+The last part were the route and json payload, another first for me. Using postgres sql allowed me to have an array for the risk questions, while sqlite doesn't allow it.
 
-I know there are improvements to be done, but once again, i was able to learn a lot from this test.
-
-
-
+I know there are improvements to be done, but once again, i was able to become a better developer after this test.
 
 
